@@ -358,8 +358,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 		}
 	 }
 	 minmax_cost[mouseCor->x][mouseCor->y] = bestScore;
-	 path[0][0] = attemptCor->x;
-	 path[0][1] = attemptCor->y;
+	 path[0][0] = bestMove->x;
+	 path[0][1] = bestMove->y;
 	 free(mouseCor);
 	 free(attemptCor);
 	 return bestScore;
@@ -665,7 +665,6 @@ int search(double gr[graph_size][4], int cat_loc[10][2], int cats, int cheese_lo
 				{
 					continue;
 				}
-
 				if (!visited[neiInd])
 				{
 
