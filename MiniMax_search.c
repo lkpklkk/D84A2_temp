@@ -27,6 +27,30 @@
 
 double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size_X][size_Y], int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2], int mode, double (*utility)(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4]), int agentId, int depth, int maxDepth, double alpha, double beta)
 {
+ //base case, time to return
+ if (checkForTerminal(mouse_loc,cat_loc,cheese_loc,cats,cheeses) || depth == maxDepth){
+	return utility(cat_loc,cheese_loc,mouse_loc,cats,cheeses,depth,gr);
+ }
+ //mouse turn
+ if (agentId == 0)
+ {	
+	 int mouseX = mouse_loc[0][0];
+	 int mouseY = mouse_loc[0][1];
+	 int curIndex = mouseX + (mouseY*size_X);
+	 for (size_t i = 0; i < 4; i++)
+	 {
+		if (gr[curIndex][i]==1)	
+		{
+			/* code */
+		}
+		
+		
+	 }
+	 
+ }
+ 
+
+ 
  /*
    This function is the interface between your solution for the assignment and the driver code. The driver code
    in MiniMax_search_core_GL will call this function once per frame, and provide the following data
