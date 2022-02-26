@@ -298,7 +298,7 @@ double getAvgCatDis(int cat_loc[10][2],int cats, int mouse_loc[1][2]){
 	double accu = 0.0;
 	for (size_t i = 0; i < cats; i++)
 	{
-		accu += (double)(abs(cat_loc[i][0]-mouse_loc[0][0])+abs(cat_loc[i][1]-mouse_loc[0][1]))
+		accu += (double)(abs(cat_loc[i][0]-mouse_loc[0][0])+abs(cat_loc[i][1]-mouse_loc[0][1]));
 	}
 	return accu/cats;
 	
