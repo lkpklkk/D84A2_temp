@@ -294,7 +294,29 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 
  return(0.0);
 }
-
+double getAvgCatDis(int cat_loc[10][2],int cats, int mouse_loc[1][2]){
+	double accu = 0.0;
+	for (size_t i = 0; i < cats; i++)
+	{
+		accu += (double)(abs(cat_loc[i][0]-mouse_loc[0][0])+abs(cat_loc[i][1]-mouse_loc[0][1]))
+	}
+	return accu/cats;
+	
+}
+double getDisToCheese(int mouse_loc[1][2],int cheese_loc[10][2], int cheeses){
+	int closestCheese = size_X+size_Y;
+	for (size_t i = 0; i < cheeses; i++)
+	{
+		int tempDis = abs(cheese_loc[i][0]-mouse_loc[0][0])+abs(cheese_loc[i][1]-mouse_loc[0][1]);
+		if (tempDis<closestCheese)
+		{
+			closestCheese = tempDis;
+		}
+		
+	}
+	return (double)closestCheese;
+	
+}
 double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4])
 {
  /*
@@ -317,8 +339,9 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
 
 		These arguments are as described in A1. Do have a look at your solution!
  */
-
- return(1);   // <--- Obviously, this will be replaced by your computer utilities
+ double distanceToCheese = getDisToCheese(mouse_loc,cheese_loc,cheeses);
+ double distanceToCats = getAvgCatDis(cat_loc,cats,mouse_loc);
+ return -distanceToCheese + distanceToCats;   // <--- Obviously, this will be replaced by your computer utilities
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
