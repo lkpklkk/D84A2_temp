@@ -349,7 +349,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			attemptMouse_loc[0][1] = attemptCor->y;
 			tempScore = MiniMax(gr,path,minmax_cost,cat_loc,cats,cheese_loc,cheeses,attemptMouse_loc,mode,utility,1,depth+1,maxDepth,alpha,beta);
 			minmax_cost[attemptCor->x][attemptCor->y] = tempScore;
-			printf("currently doing mouse move, at level %d, cur best %f, cur attempt %f \n",depth,bestScore,tempScore);
+			printf("MOUSE at level %d\n",depth);
 			if (tempScore>bestScore)
 			{
 				bestScore = tempScore;
@@ -389,7 +389,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			}else{
 				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,agentId+1,depth+1,maxDepth,alpha,beta);
 			}
-			printf("currently doing cat move, at level %d, cur best %f, cur attempt %f \n",depth,bestScore,tempScore);
+			printf("CATS at level %d\n",depth);
 			if (tempScore < bestScore)
 			{
 				bestScore = tempScore;
