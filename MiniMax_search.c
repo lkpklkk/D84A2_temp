@@ -757,7 +757,7 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
  int blockedNode = openess(mouse_loc,gr);
  double distanceToCheese = getDisToCheese(mouse_loc,cheese_loc,cheeses);
  double distanceToCats = getAvgCatDis(cat_loc,cats,mouse_loc);
- return -distanceToCheese-blockedNode==3?20:-10 +1.3*distanceToCats + random() % 3 + (40/cheeses)*atCheese(cheese_loc,mouse_loc,cheeses)-40*eaten(cat_loc,mouse_loc,cats);   // 
+ return -distanceToCheese-blockedNode*3 +1.3*distanceToCats + random() % 3 + (40/cheeses)*atCheese(cheese_loc,mouse_loc,cheeses)-40*eaten(cat_loc,mouse_loc,cats);   // 
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
