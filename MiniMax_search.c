@@ -333,7 +333,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
  {	
 	 double bestScore = -__DBL_MAX__;
 	 double tempScore = -__DBL_MAX__;
-	 Cor* bestMove = NULL;
+	 Cor* bestMove =  (Cor *)malloc(sizeof(Cor));
 	 Cor* mouseCor = (Cor *)malloc(sizeof(Cor));
 	 mouseCor->x = mouse_loc[0][0];
 	 mouseCor->y = mouse_loc[0][1];
@@ -353,7 +353,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			if (tempScore>bestScore)
 			{
 				bestScore = tempScore;
-				bestMove = attemptCor;
+				bestMove->x =  attemptCor->x;
+				bestMove->y =  attemptCor->y;
 			}
 		}
 	 }
@@ -362,11 +363,12 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 	 path[0][1] = bestMove->y;
 	 free(mouseCor);
 	 free(attemptCor);
+	 free(bestMove);
 	 return bestScore;
  }else{
 	double bestScore = __DBL_MAX__;
 	 double tempScore = __DBL_MAX__;
-	 Cor* bestMove = NULL;
+	 Cor* bestMove = (Cor *)malloc(sizeof(Cor));
 	 Cor* catCor = (Cor *)malloc(sizeof(Cor));
 	 int catId = agentId-1;
 	 catCor->x = cat_loc[catId][0];
@@ -393,7 +395,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			if (tempScore < bestScore)
 			{
 				bestScore = tempScore;
-				bestMove = attemptCor;
+				bestMove->x =  attemptCor->x;
+				bestMove->y =  attemptCor->y;
 			}
 			
 		}
@@ -401,6 +404,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 	 }
 	 free(catCor);
 	 free(attemptCor);
+	 free(bestMove);
 	 return bestScore;
  }
 
