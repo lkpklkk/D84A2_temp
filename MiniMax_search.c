@@ -396,7 +396,6 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 				bestMove = attemptCor;
 			}
 			
-			
 		}
 
 	 }
@@ -712,7 +711,7 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
 int blockedNode = openess(mouse_loc,gr);
  double distanceToCheese = getDisToCheese(mouse_loc,cheese_loc,cheeses);
  double distanceToCats = getAvgCatDis(cat_loc,cats,mouse_loc);
- return -search(gr,cat_loc,cats,cheese_loc,cheeses,mouse_loc)-blockedNode*4+distanceToCheese + 2*distanceToCats;   // <--- Obviously, this will be replaced by your computer utilities
+ return -search(gr,cat_loc,cats,cheese_loc,cheeses,mouse_loc)-blockedNode*4+distanceToCheese + 2*distanceToCats + random() % 3;   // <--- Obviously, this will be replaced by your computer utilities
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
