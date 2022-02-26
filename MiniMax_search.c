@@ -25,7 +25,204 @@
 
 #include "MiniMax_search.h"
 
+typedef struct Node
+{
+	int ind;
+	int priority;
+	struct Node *next;
+} Node;
 
+typedef struct LinkedList
+{
+	struct Node *head;
+	struct Node *tail;
+	int size;
+} Llist;
+Node *newPriNode(int ind, int priority)
+{
+	Node *newNode = (Node *)malloc(sizeof(Node));
+	newNode->ind = ind;
+	newNode->next = NULL;
+	newNode->priority = priority;
+	return newNode;
+}
+Node *newNode(int ind)
+{
+	Node *newNode = (Node *)malloc(sizeof(Node));
+	newNode->ind = ind;
+	newNode->next = NULL;
+	newNode->priority = __INT_MAX__;
+	return newNode;
+}
+Llist *newQueue()
+{
+	Llist *newList = (Llist *)malloc(sizeof(Llist));
+	newList->head = NULL;
+	newList->tail = NULL;
+	newList->size = 0;
+	return newList;
+}
+int popFirstInd(Llist *linkedList)
+{
+	if (linkedList->size == 0)
+	{
+		return -1;
+	}
+	int index = linkedList->head->ind;
+	Node *nextHead = linkedList->head->next;
+	free(linkedList->head);
+	linkedList->head = nextHead;
+	linkedList->size--;
+	if (linkedList->size == 0)
+	{
+		linkedList->tail = NULL;
+	}
+
+	return index;
+}
+void queueHead(Llist *lList, int ind)
+{
+	Node *curNode = newNode(ind);
+	Node *temp = lList->head;
+	if (temp == NULL)
+	{
+		lList->head = curNode;
+		lList->tail = curNode;
+		lList->size++;
+		return;
+	}
+
+	curNode->next = temp;
+	lList->head = curNode;
+	lList->size++;
+	return;
+}
+void queueTail(Llist *LinkedList, int ind)
+{
+	Node *curNode = newNode(ind);
+	if (LinkedList->tail == NULL)
+	{
+
+		LinkedList->head = curNode;
+		LinkedList->tail = curNode;
+		LinkedList->size++;
+	}
+	else
+	{
+		Node *temp = LinkedList->tail;
+		temp->next = curNode;
+		LinkedList->tail = curNode;
+		LinkedList->size++;
+	}
+	return;
+}
+void queueFree(Llist *lList)
+{
+	Node *node = lList->head;
+
+	while (node != NULL)
+	{
+		Node *next = node->next;
+		free(node);
+		node = next;
+	}
+}
+void pushMinQueue(Llist *lList, int ind, int priority)
+{
+	Node *start = lList->head;
+	Node *temp = newPriNode(ind, priority);
+
+	if (start == NULL)
+	{
+		lList->head = temp;
+		lList->tail = temp;
+		lList->size++;
+		return;
+	}
+	if (lList->size == 1)
+	{
+		if (start->priority > priority)
+		{
+			temp->next = start;
+			lList->head = temp;
+			lList->tail = start;
+		}
+		else
+		{
+			start->next = temp;
+			lList->tail = temp;
+		}
+	}
+	else
+	{
+		while (start->next != NULL && start->next->priority < priority)
+		{
+			start = start->next;
+		}
+
+		temp->next = start->next;
+		start->next = temp;
+	}
+	lList->size++;
+}
+bool minQueueCheck(LinkedList *lList, int ind)
+{
+	Node *start = lList->head;
+	while (start != NULL)
+	{
+		if (start->ind == ind)
+		{
+			return true;
+		}
+		start = start->next;
+	}
+	return false;
+}
+bool minQueueUpdate(LinkedList *lList, int ind, int priority)
+{
+	Node *start = lList->head;
+	if (start == NULL)
+	{
+		return false;
+	}
+	else if (start->ind == ind)
+	{
+		if (start->priority > priority)
+		{
+			start->priority = priority;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	while (start->next != NULL)
+	{
+		if (start->next->ind == ind)
+		{
+			if (start->next->priority > priority)
+			{
+				Node *temp = start->next;
+				start->next = temp->next;
+				if (temp->next == NULL)
+				{
+					lList->tail = start;
+				}
+				free(temp);
+				pushMinQueue(lList, ind, priority);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		start = start->next;
+	}
+	return false;
+}
 int toInd(int x, int y)
 {
 	int index = x + (y * size_X);
@@ -43,6 +240,7 @@ void indToCor(Cor *cor, int index)
 	cor->x = index % size_X;
 	cor->y = index / size_Y;
 }
+
 void directionToCor(Cor* cor, int direction, int curIndex){
 	Cor* tempCor = (Cor *)malloc(sizeof(Cor));
 	indToCor(tempCor,curIndex);
@@ -69,6 +267,7 @@ void directionToCor(Cor* cor, int direction, int curIndex){
 	}
 	free(tempCor);
 }
+
 void fillCats(int cats_loc_tofill[10][2], int cat_loc[10][2], int cats){
 	for (size_t i = 0; i < cats; i++)
 	{
@@ -76,6 +275,7 @@ void fillCats(int cats_loc_tofill[10][2], int cat_loc[10][2], int cats){
 		cats_loc_tofill[i][1] = cat_loc[i][1];
 	}
 }
+
 double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size_X][size_Y], int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2], int mode, double (*utility)(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4]), int agentId, int depth, int maxDepth, double alpha, double beta)
 {
  //base case, time to return
@@ -104,6 +304,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			attemptMouse_loc[0][1] = attemptCor->y;
 			tempScore = MiniMax(gr,path,minmax_cost,cat_loc,cats,cheese_loc,cheeses,attemptMouse_loc,mode,utility,1,depth+1,maxDepth,alpha,beta);
 			minmax_cost[attemptCor->x][attemptCor->y] = tempScore;
+			printf("currently doing mouse move, at level %d, cur best %f, cur attempt %f \n",depth,bestScore,tempScore);
 			if (tempScore>bestScore)
 			{
 				bestScore = tempScore;
@@ -143,6 +344,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			}else{
 				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,agentId+1,depth+1,maxDepth,alpha,beta);
 			}
+			printf("currently doing cat move, at level %d, cur best %f, cur attempt %f \n",depth,bestScore,tempScore);
 			if (tempScore < bestScore)
 			{
 				bestScore = tempScore;
@@ -294,6 +496,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 
  return(0.0);
 }
+
 double getAvgCatDis(int cat_loc[10][2],int cats, int mouse_loc[1][2]){
 	double accu = 0.0;
 	for (size_t i = 0; i < cats; i++)
@@ -303,6 +506,7 @@ double getAvgCatDis(int cat_loc[10][2],int cats, int mouse_loc[1][2]){
 	return accu/cats;
 	
 }
+
 double getDisToCheese(int mouse_loc[1][2],int cheese_loc[10][2], int cheeses){
 	int closestCheese = size_X+size_Y;
 	for (size_t i = 0; i < cheeses; i++)
@@ -317,6 +521,7 @@ double getDisToCheese(int mouse_loc[1][2],int cheese_loc[10][2], int cheeses){
 	return (double)closestCheese;
 	
 }
+
 double openess(int mouse_loc[1][2],double gr[graph_size][4]){
 	int index = toInd(mouse_loc[0][0],mouse_loc[0][1]);
 	int count = 0;
@@ -330,6 +535,114 @@ double openess(int mouse_loc[1][2],double gr[graph_size][4]){
 	}
 	return count;
 	
+}
+int getPathLen(int pred[graph_size], int curIndex, int mouseInd)
+{
+	Cor *cor = (Cor *)malloc(sizeof(Cor));
+	int path_counter = 1;
+	int path_reversed[graph_size];
+	path_reversed[0] = curIndex;
+	while (path_counter < graph_size)
+	{
+		if (curIndex == mouseInd)
+		{
+
+			path_counter--;
+			break;
+		}
+		path_reversed[path_counter] = pred[curIndex];
+		curIndex = pred[curIndex];
+		path_counter++;
+	}
+	free(cor);
+	return path_counter;
+}
+int search(double gr[graph_size][4], int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2])
+{
+	/* -----------------------------
+	initialization begin, location translation, queue, visited, path arrays set up
+	*/
+	int allChese[cheeses];
+	int allCats[cats];
+	for (size_t i = 0; i < cheeses; i++)
+	{
+		allChese[i] = toInd(cheese_loc[i][0], cheese_loc[i][1]);
+	}
+	for (size_t i = 0; i < cats; i++)
+	{
+		allCats[i] = toInd(cat_loc[i][0], cat_loc[i][1]);
+	}
+
+	int mouseInd = toInd(mouse_loc[0][0], mouse_loc[0][1]);
+
+	Llist *queue = newQueue();
+
+
+	pushMinQueue(queue, mouseInd, heuristic(mouse_loc[0][0], mouse_loc[0][1], cat_loc, cheese_loc, mouse_loc, cats, cheeses, gr));
+	
+	// allocates variables
+	int counter = 1;
+	int pred[graph_size];
+	bool visited[graph_size];
+	int curIndex;
+	int dis[graph_size];
+	Cor *cor = (Cor *)malloc(sizeof(Cor));
+	//initialize variables
+	for (size_t i = 0; i < graph_size; i++)
+	{
+		pred[i] = -1;
+		visited[i] = 0;
+		dis[i] = __INT_MAX__;
+	}
+	dis[mouseInd] = 0;
+
+	/* -------------------------------
+	initialization complete, now onto search, BFS and DFS are same except one push new nodes to tail of queue, one push to head
+	interms of Heuristic search, a priority queue is used 
+*/
+
+	while (queue->size != 0)
+	{
+		curIndex = popFirstInd(queue);
+		visited[curIndex] = true;
+		indToCor(cor, curIndex);
+		counter++;
+		if (isChese(allChese, cheeses, curIndex))
+		{
+			break;
+		}
+
+		for (size_t i = 0; i < 4; i++)
+		{
+			int neibour = gr[curIndex][i];
+			if (neibour != 0)
+			{
+				int neiInd = getIndNei(curIndex, i);
+				if (isCat(allCats, cats, neiInd))
+				{
+					continue;
+				}
+
+				if (!visited[neiInd])
+				{
+
+					 //BFS
+					
+					queueTail(queue, neiInd);
+					
+				
+					// all paths are updated except for one of heuristic case : current node is in minQueue but does not have better f(n)
+					pred[neiInd] = curIndex;
+				}
+			}
+		}
+	}
+	queueFree(queue);
+	free(queue);
+	free(cor);
+	return getPathLen(pred, curIndex, mouseInd);
+	
+
 }
 double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4])
 {
@@ -356,7 +669,7 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
 int blockedNode = openess(mouse_loc,gr);
  double distanceToCheese = getDisToCheese(mouse_loc,cheese_loc,cheeses);
  double distanceToCats = getAvgCatDis(cat_loc,cats,mouse_loc);
- return -blockedNode*4,distanceToCheese + 2*distanceToCats;   // <--- Obviously, this will be replaced by your computer utilities
+ return -search(gr,cat_loc,cats,cheese_loc,cheeses,mouse_loc)-blockedNode*4+distanceToCheese + 2*distanceToCats;   // <--- Obviously, this will be replaced by your computer utilities
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
