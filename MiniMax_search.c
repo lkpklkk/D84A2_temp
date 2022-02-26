@@ -375,7 +375,7 @@ double tempBeta = beta;
 	 path[0][1] = bestMove->y;
 	 free(mouseCor);
 	 free(attemptCor);
-	 free(bestMove)
+	 free(bestMove);
 	 return bestScore;
  }else{
 	double bestScore = __DBL_MAX__;
