@@ -25,6 +25,51 @@
 
 #include "MiniMax_search.h"
 
+int getIndNei(int curIndex, int neiInd)
+{
+	if (neiInd == 0)
+	{
+		return curIndex - size_X;
+	}
+	if (neiInd == 1)
+	{
+		return curIndex + 1;
+	}
+	if (neiInd == 2)
+	{
+		return curIndex + size_X;
+	}
+	if (neiInd == 3)
+	{
+		return curIndex - 1;
+	}
+	return -1;
+}
+
+bool isChese(int *allChese, int cheses, int curInd)
+{
+	for (size_t i = 0; i < cheses; i++)
+	{
+		if (allChese[i] == curInd)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
+bool isCat(int *allCats, int cats, int curInd)
+{
+	for (size_t i = 0; i < cats; i++)
+	{
+		if (allCats[i] == curInd)
+		{
+			return 1;
+		}
+	}
+	return 0;
+}
+
 typedef struct Node
 {
 	int ind;
@@ -491,8 +536,6 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 
  // Stub so that the code compiles/runs - This will be removed and replaced by your code!
 
- path[0][0]=mouse_loc[0][0];
- path[0][1]=mouse_loc[0][1];
 
  return(0.0);
 }
@@ -578,7 +621,7 @@ int search(double gr[graph_size][4], int cat_loc[10][2], int cats, int cheese_lo
 	Llist *queue = newQueue();
 
 
-	pushMinQueue(queue, mouseInd, heuristic(mouse_loc[0][0], mouse_loc[0][1], cat_loc, cheese_loc, mouse_loc, cats, cheeses, gr));
+	queueTail(queue, mouseInd);
 	
 	// allocates variables
 	int counter = 1;
@@ -644,6 +687,7 @@ int search(double gr[graph_size][4], int cat_loc[10][2], int cats, int cheese_lo
 	
 
 }
+
 double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4])
 {
  /*
