@@ -317,6 +317,20 @@ double getDisToCheese(int mouse_loc[1][2],int cheese_loc[10][2], int cheeses){
 	return (double)closestCheese;
 	
 }
+double openess(int mouse_loc[1][2],double gr[graph_size][4]){
+	int index = toInd(mouse_loc[0][0],mouse_loc[0][1]);
+	int count = 0;
+	for (size_t i = 0; i < 4; i++)
+	{
+		if (gr[index][i]==0)
+		{
+			count++;
+		}
+		
+	}
+	return count;
+	
+}
 double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4])
 {
  /*
@@ -339,9 +353,10 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
 
 		These arguments are as described in A1. Do have a look at your solution!
  */
+int blockedNode = openess(mouse_loc,gr);
  double distanceToCheese = getDisToCheese(mouse_loc,cheese_loc,cheeses);
  double distanceToCats = getAvgCatDis(cat_loc,cats,mouse_loc);
- return distanceToCheese + 2*distanceToCats;   // <--- Obviously, this will be replaced by your computer utilities
+ return -blockedNode*4,distanceToCheese + 2*distanceToCats;   // <--- Obviously, this will be replaced by your computer utilities
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)
