@@ -89,11 +89,10 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 	 double bestScore = -__DBL_MAX__;
 	 double tempScore = -__DBL_MAX__;
 	 Cor* bestMove = NULL;
-
 	 Cor* mouseCor = (Cor *)malloc(sizeof(Cor));
 	 mouseCor->x = mouse_loc[0][0];
 	 mouseCor->y = mouse_loc[0][1];
-	 int mouseInd = toInd(mouseX,mouseY);
+	 int mouseInd = toInd(mouseCor->x,mouseCor->y);
 	 Cor* attemptCor = (Cor *)malloc(sizeof(Cor));
 	 int attemptMouse_loc[1][2];
 	 for (size_t i = 0; i < 4; i++)
