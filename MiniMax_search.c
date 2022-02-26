@@ -327,6 +327,8 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
  if (checkForTerminal(mouse_loc,cat_loc,cheese_loc,cats,cheeses) || depth == maxDepth){
 	return utility(cat_loc,cheese_loc,mouse_loc,cats,cheeses,depth,gr);
  }
+double tempAlpha = alpha;
+double tempBeta = beta;
 
  //mouse turn
  if (agentId == 0)
@@ -347,14 +349,24 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			directionToCor(attemptCor, i,mouseInd);
 			attemptMouse_loc[0][0] = attemptCor->x;
 			attemptMouse_loc[0][1] = attemptCor->y;
-			tempScore = MiniMax(gr,path,minmax_cost,cat_loc,cats,cheese_loc,cheeses,attemptMouse_loc,mode,utility,1,depth+1,maxDepth,alpha,beta);
+			tempScore = MiniMax(gr,path,minmax_cost,cat_loc,cats,cheese_loc,cheeses,attemptMouse_loc,mode,utility,1,depth+1,maxDepth,tempAlpha,tempBeta);
 			minmax_cost[attemptCor->x][attemptCor->y] = tempScore;
-			printf("MOUSE at level %d\n",depth);
 			if (tempScore>bestScore)
 			{
 				bestScore = tempScore;
 				bestMove->x =  attemptCor->x;
 				bestMove->y =  attemptCor->y;
+			}
+			if (mode==1)
+			{
+				if (tempScore>tempAlpha)
+				{
+					tempAlpha = tempScore;
+				}
+				if (tempAlpha>=tempBeta)
+				{
+					break;
+				}
 			}
 		}
 	 }
@@ -363,7 +375,7 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 	 path[0][1] = bestMove->y;
 	 free(mouseCor);
 	 free(attemptCor);
-	 free(bestMove);
+	 free(bestMove)
 	 return bestScore;
  }else{
 	double bestScore = __DBL_MAX__;
@@ -387,16 +399,29 @@ double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size
 			// last cat to move
 			if (catId==cats-1)
 			{
-				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,0,depth+1,maxDepth,alpha,beta);
+				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,0,depth+1,maxDepth,tempAlpha,tempBeta);
 			}else{
-				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,agentId+1,depth+1,maxDepth,alpha,beta);
+				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,agentId+1,depth+1,maxDepth,tempAlpha,tempBeta);
 			}
-			printf("CATS at level %d\n",depth);
+
 			if (tempScore < bestScore)
 			{
 				bestScore = tempScore;
 				bestMove->x =  attemptCor->x;
 				bestMove->y =  attemptCor->y;
+			}
+			if (mode==1)
+			{
+				if (tempScore<tempBeta)
+				{
+					tempBeta = tempScore;
+				}
+				if (tempBeta<=tempAlpha)
+				{
+					break;
+				}
+				
+				
 			}
 			
 		}
