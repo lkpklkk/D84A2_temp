@@ -25,29 +25,140 @@
 
 #include "MiniMax_search.h"
 
+
+int toInd(int x, int y)
+{
+	int index = x + (y * size_X);
+	return index;
+}
+
+typedef struct cor
+{
+	int x;
+	int y;
+} Cor;
+
+void indToCor(Cor *cor, int index)
+{
+	cor->x = index % size_X;
+	cor->y = index / size_Y;
+}
+void directionToCor(Cor* cor, int direction, int curIndex){
+	Cor* tempCor = (Cor *)malloc(sizeof(Cor));
+	indToCor(tempCor,curIndex);
+	switch (direction)
+	{
+	case 0:
+		cor->x = tempCor->x;
+		cor->y = tempCor->y -1;
+		break;
+	case 1:
+		cor ->x = tempCor ->x +1;
+		cor -> y = tempCor -> y;
+		break;
+	case 2:
+		cor->x = tempCor ->x;
+		cor->y = tempCor->y+1;
+		break;
+	case 3:
+		cor -> x = tempCor -> x -1;
+		cor->y = tempCor -> y;
+		break;
+	default:
+		break;
+	}
+	free(tempCor);
+}
+void fillCats(int cats_loc_tofill[10][2], int cat_loc[10][2], int cats){
+	for (size_t i = 0; i < cats; i++)
+	{
+		cats_loc_tofill[i][0] = cat_loc[i][0];
+		cats_loc_tofill[i][1] = cat_loc[i][1];
+	}
+}
 double MiniMax(double gr[graph_size][4], int path[1][2], double minmax_cost[size_X][size_Y], int cat_loc[10][2], int cats, int cheese_loc[10][2], int cheeses, int mouse_loc[1][2], int mode, double (*utility)(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4]), int agentId, int depth, int maxDepth, double alpha, double beta)
 {
  //base case, time to return
  if (checkForTerminal(mouse_loc,cat_loc,cheese_loc,cats,cheeses) || depth == maxDepth){
 	return utility(cat_loc,cheese_loc,mouse_loc,cats,cheeses,depth,gr);
  }
+
  //mouse turn
  if (agentId == 0)
  {	
-	 int mouseX = mouse_loc[0][0];
-	 int mouseY = mouse_loc[0][1];
-	 int curIndex = mouseX + (mouseY*size_X);
+	 double bestScore = -__DBL_MAX__;
+	 double tempScore = -__DBL_MAX__;
+	 Cor* bestMove = NULL;
+
+	 Cor* mouseCor = (Cor *)malloc(sizeof(Cor));
+	 mouseCor->x = mouse_loc[0][0];
+	 mouseCor->y = mouse_loc[0][1];
+	 int mouseInd = toInd(mouseX,mouseY);
+	 Cor* attemptCor = (Cor *)malloc(sizeof(Cor));
+	 int attemptMouse_loc[1][2];
 	 for (size_t i = 0; i < 4; i++)
 	 {
-		if (gr[curIndex][i]==1)	
-		{
-			/* code */
+		if (gr[mouseInd][i]==1)	//valid move
+		{	
+			directionToCor(attemptCor, i,mouseInd);
+			attemptMouse_loc[0][0] = attemptCor->x;
+			attemptMouse_loc[0][1] = attemptCor->y;
+			tempScore = MiniMax(gr,path,minmax_cost,cat_loc,cats,cheese_loc,cheeses,attemptMouse_loc,mode,utility,1,depth+1,maxDepth,alpha,beta);
+			minmax_cost[attemptCor->x][attemptCor->y] = tempScore;
+			if (tempScore>bestScore)
+			{
+				bestScore = tempScore;
+				bestMove = attemptCor;
+			}
 		}
-		
-		
 	 }
-	 
+	 minmax_cost[mouseCor->x][mouseCor->y] = bestScore;
+	 path[0][0] = attemptCor->x;
+	 path[0][1] = attemptCor->y;
+	 free(mouseCor);
+	 free(attemptCor);
+	 return bestScore;
+ }else{
+	double bestScore = __DBL_MAX__;
+	 double tempScore = __DBL_MAX__;
+	 Cor* bestMove = NULL;
+	 Cor* catCor = (Cor *)malloc(sizeof(Cor));
+	 int catId = agentId-1;
+	 catCor->x = cat_loc[catId][0];
+	 catCor->y =  cat_loc[catId][1];
+	 int catInd = toInd(catCor->x,catCor->y );
+	 Cor* attemptCor = (Cor *)malloc(sizeof(Cor));
+	 int attemptCat_loc[10][2];
+	 fillCats(attemptCat_loc,cat_loc,cats);
+	 for (size_t i = 0; i < 4; i++)
+	 {
+		if (gr[catInd][i]==1)	//valid move
+		{	
+			directionToCor(attemptCor, i,catInd);
+			attemptCat_loc[catId][0] = attemptCor->x;
+			attemptCat_loc[catId][1] = attemptCor->y;
+			// last cat to move
+			if (catId==cats-1)
+			{
+				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,0,depth+1,maxDepth,alpha,beta);
+			}else{
+				tempScore = MiniMax(gr,path,minmax_cost,attemptCat_loc,cats,cheese_loc,cheeses,mouse_loc,mode,utility,agentId+1,depth+1,maxDepth,alpha,beta);
+			}
+			if (tempScore < bestScore)
+			{
+				bestScore = tempScore;
+				bestMove = attemptCor;
+			}
+			
+			
+		}
+
+	 }
+	 free(catCor);
+	 free(attemptCor);
+	 return bestScore;
  }
+
  
 
  
