@@ -572,24 +572,25 @@ double getAvgCatDis(int cat_loc[10][2],int cats, int mouse_loc[1][2]){
 	double accu = 0.0;
 	for (size_t i = 0; i < cats; i++)
 	{
-		accu += (double)(abs(cat_loc[i][0]-mouse_loc[0][0])+abs(cat_loc[i][1]-mouse_loc[0][1]));
+		accu += sqrt(pow((cat_loc[i][0]-mouse_loc[0][0]),2)+pow((cat_loc[i][1]-mouse_loc[0][1]),2));
 	}
 	return accu/cats;
 	
 }
 
 double getDisToCheese(int mouse_loc[1][2],int cheese_loc[10][2], int cheeses){
-	int closestCheese = size_X+size_Y;
+	int closestCheese = sqrt(pow(size_X,2) + pow(size_Y,2));
+	double tempDis = 0;
 	for (size_t i = 0; i < cheeses; i++)
 	{
-		int tempDis = abs(cheese_loc[i][0]-mouse_loc[0][0])+abs(cheese_loc[i][1]-mouse_loc[0][1]);
+		tempDis = sqrt(pow((cheese_loc[i][0]-mouse_loc[0][0]),2)+pow((cheese_loc[i][1]-mouse_loc[0][1]),2));
 		if (tempDis<closestCheese)
 		{
 			closestCheese = tempDis;
 		}
 		
 	}
-	return (double)closestCheese;
+	return closestCheese;
 	
 }
 
@@ -715,6 +716,22 @@ int search(double gr[graph_size][4], int cat_loc[10][2], int cats, int cheese_lo
 
 }
 
+int atCheese(int cheese_loc[10][2], int mouse_loc[1][2], int cheeses){
+for(int i = 0;i<cheeses;i++){
+if(cheese_loc[i][0]==mouse_loc[0][0] && cheese_loc[i][1]==mouse_loc[0][1]){
+	return 1;
+}
+}
+return 0;
+}
+int eaten(int cat_loc[10][2], int mouse_loc[1][2],int cats){
+for(int i = 0;i<cats;i++){
+if(cat_loc[i][0]==mouse_loc[0][0] && cat_loc[i][1]==mouse_loc[0][1]){
+	return 1;
+}
+}
+return 0;
+}
 double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], int cats, int cheeses, int depth, double gr[graph_size][4])
 {
  /*
@@ -737,10 +754,10 @@ double utility(int cat_loc[10][2], int cheese_loc[10][2], int mouse_loc[1][2], i
 
 		These arguments are as described in A1. Do have a look at your solution!
  */
-int blockedNode = openess(mouse_loc,gr);
+ int blockedNode = openess(mouse_loc,gr);
  double distanceToCheese = getDisToCheese(mouse_loc,cheese_loc,cheeses);
  double distanceToCats = getAvgCatDis(cat_loc,cats,mouse_loc);
- return -search(gr,cat_loc,cats,cheese_loc,cheeses,mouse_loc)-blockedNode*4-distanceToCheese + distanceToCats + random() % 3;   // <--- Obviously, this will be replaced by your computer utilities
+ return -distanceToCheese-blockedNode==3?20:-10 +1.3*distanceToCats + random() % 3 + (40/cheeses)*atCheese(cheese_loc,mouse_loc,cheeses)-40*eaten(cat_loc,mouse_loc,cats);   // 
 }
 
 int checkForTerminal(int mouse_loc[1][2],int cat_loc[10][2],int cheese_loc[10][2],int cats,int cheeses)

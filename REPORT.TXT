@@ -5,15 +5,15 @@ Assignment 2 - MiniMax and Game Trees
 ________________________________________________
 
 Student Name 1 (last, first):
-
+le keping
 Student Name 2 (last, first):
 
 Student number 1:
-
+1004948890
 Student number 2:
 
 UTORid 1:
-
+lekeping
 UTORid 2:
 
 READ THIS AND SIGN YOUR NAME AT THE END:
@@ -22,7 +22,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-	Signed: _(student 1 name here)__	_(student 2 name here)__
+	Signed: lekeping	_(student 2 name here)__
 
 
 (-5 marks for failing to provide the identifying
@@ -37,26 +37,41 @@ but explain carefully when needed.
      how their influence was evaluated and integrated into
      a single, meaningful value. Convince us that your utility
      makes sense!
+     
+     it balances the how likely the mouse will get the cheese before getting eaten by cats by comparing the distances, and if cat is eating the mouse, large negetive value was given, and if mouse is eating cheese, incentive would be given
+     also preventing the mouse to kite cats around a circle non stop, randomness is introduced in utility function to break it up a bit (adding noise basically)
+     
 
 2 .- (2 marks) Ignoring computation time, what is the effect of
      search depth (number of turns) on the chances of the mouse
      winning the game. 
+     
+     higher win rate
 
 3 .- (2 marks) What situations will cause your mouse to lose?
      can these be fixed either with the utility function, or
      by changing the search depth? if so, how?
 
+     sometimes wander around allowing cats to catch up, 
+     this is because sometimes the distance to cheese and distance to cats are too balanced to the point they are undecidable
+     so slightly increasing weight on oneside solved this kind of problem
+     
+     
 4 .- (2 marks) Compare cats with smartness=.8 against cats with
      smartness=1 - which are harder for your mouse to beat?
      why do you think that is?
 
+	definitely .8 cats are easier to beat, from observation, 1 smartness cats do not give breathing rooms(that is sometimes running away from mouse), .8 cats does 	
+	
 5 .- (2 marks) Can the mouse be made unbeatable by having an
      optimal utility function?
-
+	no the mouse could still lose on some occasion(cheese deep down in dead end, no way to get, assuming cat is smart enough)
+	
 6 .- (2 bonus marks) Could a human playing the game in place
       of the mouse do better than your code? (yes, no, and
       a reasonable explanation of why)
-
+	
+	Yes, because my code as of right now do not consider about the dead end we have here, and the mouse still wander arond sometimes
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
@@ -65,13 +80,13 @@ doesn't work, or what problems exist.
 	
 	Complete/Working	Partial		Not done
 
-Utility
+Utility	x
  function
 
-MiniMax
+MiniMax	x
 
 Alpha/Beta
- pruning
+ pruning	x
 _____________________________________________________
 
 Marking:
