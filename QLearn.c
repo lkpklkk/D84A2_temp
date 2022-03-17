@@ -217,7 +217,7 @@ QLearn_action (double gr[max_graph_size][4], int mouse_pos[1][2],
               + ((m + (n * size_X)) * graph_size * graph_size);
       a = get_best_move (QTable, s);
     }
-
+  printf ("a is :%d\n", a);
   return (a); // <--- of course, you will change this!
 }
 
