@@ -92,7 +92,7 @@ QLearn_update (int s, int a, double r, int s_new, double *QTable)
    * TO DO: Complete this function
    ***********************************************************************************************/
 
-  int *cur_qa_ind = QTable + 4 * s + a;
+  double *cur_qa_ind = QTable + 4 * s + a;
   int max_qsa_new = get_best_qsa (QTable, s_new);
   double update = (alpha * (r + lambda * max_qsa_new - *(cur_qa_ind)));
   *(cur_qa_ind) = *(cur_qa_ind) + update;
@@ -251,6 +251,7 @@ QLearn_reward (double gr[max_graph_size][4], int mouse_pos[1][2],
     {
       return 10.;
     }
+  return 0;
 }
 
 void
