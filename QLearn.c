@@ -517,6 +517,7 @@ relative_mous_cat_to_cheese (double gr[max_graph_size][4], int mouse_pos[1][2],
                              int cats[5][2], int cheeses[5][2], int size_X,
                              int graph_size)
 {
+  printf ("yes");
   return 0;
 }
 
