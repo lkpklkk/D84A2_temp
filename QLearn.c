@@ -519,8 +519,8 @@ relative_mous_cat_to_cheese (double gr[max_graph_size][4], int mouse_pos[1][2],
 {
   int man_dis = abs (mouse_pos[0][0] - cheeses[0][0])
                 + abs (mouse_pos[0][1] - cheeses[0][1]);
-  int ra = rand () % 10;
-  return ra / 10.;
+  int ra = rand ();
+  return (double)ra;
 }
 
 static void
