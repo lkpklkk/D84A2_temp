@@ -405,7 +405,6 @@ feat_QLearn_action (double gr[max_graph_size][4], double weights[25],
   free (available_move);
 
   return (a);
-  return (0); // <--- replace this while you're at it!
 }
 
 void
@@ -495,7 +494,7 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
           evaluateFeatures (gr, features, mouse_pos, cats, cheeses, size_X,
                             graph_size);
           temp = Qsa (weights, features);
-          if (temp > *maxU)
+          if (temp >= *maxU)
             {
               *maxU = temp;
               *maxA = i;
