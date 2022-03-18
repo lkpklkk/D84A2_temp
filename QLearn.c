@@ -393,7 +393,7 @@ feat_QLearn_action (double gr[max_graph_size][4], double weights[25],
     }
   else
     {
-      int *maxU = (int *)malloc (sizeof (double));
+      double *maxU = (double *)malloc (sizeof (double));
       int *maxA = (int *)malloc (sizeof (int));
       maxQsa (gr, weights, mouse_pos, cats, cheeses, size_X, graph_size, maxU,
               maxA);
