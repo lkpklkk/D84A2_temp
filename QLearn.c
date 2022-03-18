@@ -38,18 +38,22 @@ toInd (int x, int y, int size_X)
   return index;
 }
 
+
 int
-get_best_move (double *QTable, int s)
+get_best_move (double *QTable, int s, int *available_move, int available_count)
 {
+  
+  
   double max_qa_new = -DBL_MAX;
   int best_a;
-  for (int i = 0; i <= 3; i++)
+  double temp;
+  for (int i = 0; i < available_count; i++)
     {
-      double temp;
-      if (temp = *(QTable + 4 * s + i) > max_qa_new)
+      temp = *(QTable + 4 * s + *(available_move+i));
+      if (temp > max_qa_new)
         {
           max_qa_new = temp;
-          best_a = i;
+          best_a = *(available_move+i);
         }
     }
   return best_a;
@@ -59,10 +63,11 @@ double
 get_best_qsa (double *QTable, int s)
 {
   double max_qsa = -DBL_MAX;
-  for (size_t i = 0; i <= 3; i++)
+  double temp;
+  for (size_t i = 0; i < 4; i++)
     {
-      double temp;
-      if (temp = *(QTable + 4 * s + i) > max_qsa)
+      temp = *(QTable + 4 * s + i);
+      if (temp > max_qsa)
         {
           max_qsa = temp;
         }
@@ -93,8 +98,8 @@ QLearn_update (int s, int a, double r, int s_new, double *QTable)
    ***********************************************************************************************/
 
   double *cur_qa_ind = QTable + 4 * s + a;
-  int max_qsa_new = get_best_qsa (QTable, s_new);
-  double update = (alpha * (r + lambda * max_qsa_new - *(cur_qa_ind)));
+  double max_qsa_new = get_best_qsa (QTable, s_new);
+  double update = alpha * (r + lambda * max_qsa_new - *(cur_qa_ind));
   *(cur_qa_ind) = *(cur_qa_ind) + update;
 }
 
@@ -184,26 +189,28 @@ QLearn_action (double gr[max_graph_size][4], int mouse_pos[1][2],
    ***********************************************************************************************/
 
   int mouse_ind = toInd (mouse_pos[0][0], mouse_pos[0][1], size_X);
-  int available_move[4];
+  int *available_move = (int*)malloc(4 * sizeof(int));
+  
+  
   int available_count = 0;
-  for (size_t i = 0; i < 4; i++)
+  for (int i = 0; i < 4; i++)
     {
       if (gr[mouse_ind][i])
         {
-          available_move[available_count] = i;
+          *(available_move+available_count) = i;
           available_count++;
         }
     }
-  int c_int = rand () % 100;
+  
+  double c_int = (double) (rand () % 101);
   double c = c_int / 100;
   int a;
-
   // random, since pct increases, so we do >=, less likely to generate random
   // as pct gets larger
-  if (c >= pct)
+  if (c > pct)
     {
-      int action_index = rand () % (available_count + 1);
-      a = available_move[action_index];
+      int action_index = rand () % available_count;
+      a = *(available_move+action_index);
     }
   else
     {
@@ -215,9 +222,9 @@ QLearn_action (double gr[max_graph_size][4], int mouse_pos[1][2],
       int n = cheeses[0][1];
       int s = (i + (j * size_X)) + ((k + (l * size_X)) * graph_size)
               + ((m + (n * size_X)) * graph_size * graph_size);
-      a = get_best_move (QTable, s);
+      a = get_best_move (QTable, s, available_move,available_count);
     }
-  printf ("a is :%d\n", a);
+  free(available_move);
   return (a); // <--- of course, you will change this!
 }
 
@@ -243,15 +250,34 @@ QLearn_reward (double gr[max_graph_size][4], int mouse_pos[1][2],
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
+   double r = 0;
+   
+   
   if (cats[0][0] == mouse_pos[0][0] && cats[0][1] == mouse_pos[0][1])
     {
-      return -10.;
+      r -= (double) 100;
     }
   if (cheeses[0][0] == mouse_pos[0][0] && cheeses[0][1] == mouse_pos[0][1])
     {
-      return 10.;
+      r += (double) 100;
     }
-  return 0;
+  int count = 0;
+  int mouse_ind = toInd(mouse_pos[0][0],mouse_pos[0][1],size_X);
+  for (size_t i = 0; i < 4; i++)
+  {
+    if (!gr[mouse_ind][i])
+    {
+      count++;
+    }
+    
+  }
+  if (count == 3)
+  {
+    r -= 10;
+  }
+    
+  return r;
+
 }
 
 void
@@ -274,6 +300,8 @@ feat_QLearn_update (double gr[max_graph_size][4], double weights[25],
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
+  //order of implementation
+  //i can get qas, maxqsa, then evaluate, then we can have this working
 }
 
 int

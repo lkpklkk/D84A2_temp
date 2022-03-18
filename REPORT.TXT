@@ -36,6 +36,10 @@ but explain carefully when needed.
       are used, and why you think this is a good reward function
       for this problem.
 
+     It is quite straight-forward, my mouse like cheese afraid cat and 
+     is a little claustrophobic, so it gets point for cheese, deduce points if eaten,
+     and slightly deduce points if in deadend.
+
 2 .- These are multiple experiments (once you are sure your 
      QLearning code is working!) 
 
@@ -46,51 +50,76 @@ but explain carefully when needed.
      # 8x8 grid, cat-smartness .9
 
      Initial mouse winning rate (first rate obtained when training starts):
+     
+     ~~~~~ 
+     Initial win rate is 0.069
 
      Train your mouse, and once trained, run the evaluation and  
      record the mouse winning rate:
+
+     ~~~~~
+     Trained win rate is 0.86
 
      (1 mark) # Experiment 2, 1000000 training trials, 50 rounds, random seed 1522,
      # 8x8 grid, cat-smartness .9
 
      Initial mouse winning rate (first rate obtained when training starts):
-
+     
+     ~~~~~
+     Initial winning rate is 0.066
+     
      Train your mouse, and once trained, run the evaluation and  
      record the mouse winning rate:
 
+     ~~~~~
+     Trained win rate is 0.93
+
      (1 mark) Would the mouse keep improving and become invincible if
      you ran, say, 100,000,000 training rounds per batch?     
+
+     ~~~~~
+     if we are running the same seed, I would say yes because the mouse might
+     have experienced every experience tuple possible
 
 4 .- Using the QTable saved from Experiment 2 (NO re-training!)
 
      (1 mark) # Experiment 3 - Run the evaluation on the 8x8 grid, cat-smartness=.9,
      # but using the random seed 4289 for the game.
 	
-     Mouse Winning Rate:
+     Mouse Winning Rate: 0.35
 
      (2 mark) # Experiment 4 - Run the evaluation on the 8x8 grid, cat-smartness=.9,
      # but using the random seed 31415 for the game.
 	
-     Mouse Winning Rate:
-
+     Mouse Winning Rate: 0.49
      Average rate for Experiement 3 and Experiment 4:
 
      (1 mark) Compare with the rate obtained in experiment 2. What is happening here?
+     
+     since normal q-learning is very environment based, even if trained extensively,
+     when new envoriment is introduced, we can not generalize the old trained set.
 
 5 .- Understanding the effects of state space on learning ability:
 
      (1 mark) # Experiment 5 - Train your mouse on the 16x16 grid, using random seed
      # 1522, 1000000 trials, and 50 training rounds. Cat-smartness=.9
 
-     Initial mouse winning rate (first rate obtained when training starts):
+     Initial mouse winning rate (first rate obtained when training starts): 0.034
 
-     Mouse Winning Rate (from evaluation after training):
+     Mouse Winning Rate (from evaluation after training):0.63
 
      (1 mark) Compare the final winning rate with that from Experiment 2, what can
      you say about the difference in winning rates?
 
+     difference in winning rate has reduced, probably because state space is much larger, therefore
+     we need to increase the trials number for each round in order to achieve the same training result.
+
+
 6 .- (2 marks) Is standard Q-Learning a rasonable strategy for environments
      that change constantly? discuss based on the above
+
+     No, by the nature of standard Q-learning, its trained data does not generalize well since its trained based on
+     the exact same environment its given, when enviroment changes, it's trained policy would be of little use.
 
 7 .- (3 marks) Explain your feature set for feature-based Q Learning, and
                explain why and how each feature is expected to contribute
