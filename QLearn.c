@@ -343,6 +343,7 @@ feat_QLearn_update (double gr[max_graph_size][4], double weights[25],
     }
   free (maxU);
   free (maxA);
+  free (features);
 }
 
 int
