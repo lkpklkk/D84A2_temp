@@ -494,7 +494,6 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
           evaluateFeatures (gr, features, mouse_pos, cats, cheeses, size_X,
                             graph_size);
           temp = Qsa (weights, features);
-          printf ("***************temp:%f\n", temp);
           if (temp >= *maxU)
             {
               *maxU = temp;
@@ -520,7 +519,7 @@ relative_mous_cat_to_cheese (double gr[max_graph_size][4], int mouse_pos[1][2],
 {
   int man_dis = abs (mouse_pos[0][0] - cheeses[0][0])
                 + abs (mouse_pos[0][1] - cheeses[0][1]);
-  int ra = rand ();
+  int ra = rand () % 2;
   return (double)ra;
 }
 
