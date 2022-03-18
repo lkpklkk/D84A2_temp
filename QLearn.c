@@ -521,7 +521,7 @@ relative_mous_cat_to_cheese (double gr[max_graph_size][4], int mouse_pos[1][2],
                 + abs (mouse_pos[0][1] - cheeses[0][1]);
   int ra = rand () % 101;
   double percent = ra / 100;
-  return percent;
+  return 1;
 }
 
 static void
