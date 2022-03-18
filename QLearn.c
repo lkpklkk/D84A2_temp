@@ -321,7 +321,7 @@ feat_QLearn_update (double gr[max_graph_size][4], double weights[25],
   // i can get qas, maxqsa, then evaluate, then we can have this working
   double *features = (double *)malloc (25 * sizeof (double));
   double *maxU = (double *)malloc (sizeof (double));
-  double *maxA = (double *)malloc (sizeof (double));
+  int *maxA = (double *)malloc (sizeof (int));
   double q_now;
   double q_new;
 
