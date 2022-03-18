@@ -30,7 +30,8 @@
 */
 #include "QLearn.h"
 // helper function that convert coordinate to the index for graph array
-int
+static double relative_mous_cat_to_cheese ();
+static void featureFuncHandlar ();
 toInd (int x, int y, int size_X)
 {
 
@@ -38,22 +39,20 @@ toInd (int x, int y, int size_X)
   return index;
 }
 
-
 int
 get_best_move (double *QTable, int s, int *available_move, int available_count)
 {
-  
-  
+
   double max_qa_new = -DBL_MAX;
   int best_a;
   double temp;
   for (int i = 0; i < available_count; i++)
     {
-      temp = *(QTable + 4 * s + *(available_move+i));
+      temp = *(QTable + 4 * s + *(available_move + i));
       if (temp > max_qa_new)
         {
           max_qa_new = temp;
-          best_a = *(available_move+i);
+          best_a = *(available_move + i);
         }
     }
   return best_a;
@@ -73,6 +72,28 @@ get_best_qsa (double *QTable, int s)
         }
     }
   return max_qsa;
+}
+
+void
+get_newloc_on_nei_ind (int pos[1][2], int nei_ind)
+{
+  switch (nei_ind)
+    {
+    case 0:
+      pos[0][1]++;
+      break;
+    case 1:
+      pos[0][0]++;
+      break;
+    case 2:
+      pos[0][1]--;
+      break;
+    case 3:
+      pos[0][0]--;
+      break;
+    default:
+      break;
+    }
 }
 
 void
@@ -189,20 +210,19 @@ QLearn_action (double gr[max_graph_size][4], int mouse_pos[1][2],
    ***********************************************************************************************/
 
   int mouse_ind = toInd (mouse_pos[0][0], mouse_pos[0][1], size_X);
-  int *available_move = (int*)malloc(4 * sizeof(int));
-  
-  
+  int *available_move = (int *)malloc (4 * sizeof (int));
+
   int available_count = 0;
   for (int i = 0; i < 4; i++)
     {
       if (gr[mouse_ind][i])
         {
-          *(available_move+available_count) = i;
+          *(available_move + available_count) = i;
           available_count++;
         }
     }
-  
-  double c_int = (double) (rand () % 101);
+
+  double c_int = (double)(rand () % 101);
   double c = c_int / 100;
   int a;
   // random, since pct increases, so we do >=, less likely to generate random
@@ -210,7 +230,7 @@ QLearn_action (double gr[max_graph_size][4], int mouse_pos[1][2],
   if (c > pct)
     {
       int action_index = rand () % available_count;
-      a = *(available_move+action_index);
+      a = *(available_move + action_index);
     }
   else
     {
@@ -222,9 +242,9 @@ QLearn_action (double gr[max_graph_size][4], int mouse_pos[1][2],
       int n = cheeses[0][1];
       int s = (i + (j * size_X)) + ((k + (l * size_X)) * graph_size)
               + ((m + (n * size_X)) * graph_size * graph_size);
-      a = get_best_move (QTable, s, available_move,available_count);
+      a = get_best_move (QTable, s, available_move, available_count);
     }
-  free(available_move);
+  free (available_move);
   return (a); // <--- of course, you will change this!
 }
 
@@ -250,34 +270,31 @@ QLearn_reward (double gr[max_graph_size][4], int mouse_pos[1][2],
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
-   double r = 0;
-   
-   
+  double r = 0;
+
   if (cats[0][0] == mouse_pos[0][0] && cats[0][1] == mouse_pos[0][1])
     {
-      r -= (double) 100;
+      r -= (double)100;
     }
   if (cheeses[0][0] == mouse_pos[0][0] && cheeses[0][1] == mouse_pos[0][1])
     {
-      r += (double) 100;
+      r += (double)100;
     }
   int count = 0;
-  int mouse_ind = toInd(mouse_pos[0][0],mouse_pos[0][1],size_X);
+  int mouse_ind = toInd (mouse_pos[0][0], mouse_pos[0][1], size_X);
   for (size_t i = 0; i < 4; i++)
-  {
-    if (!gr[mouse_ind][i])
     {
-      count++;
+      if (!gr[mouse_ind][i])
+        {
+          count++;
+        }
     }
-    
-  }
   if (count == 3)
-  {
-    r -= 10;
-  }
-    
-  return r;
+    {
+      r -= 10;
+    }
 
+  return r;
 }
 
 void
@@ -300,8 +317,29 @@ feat_QLearn_update (double gr[max_graph_size][4], double weights[25],
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
-  //order of implementation
-  //i can get qas, maxqsa, then evaluate, then we can have this working
+  // order of implementation
+  // i can get qas, maxqsa, then evaluate, then we can have this working
+  double *features = (double *)malloc (25 * sizeof (double));
+  double *maxU = (double *)malloc (sizeof (double));
+  double *maxA = (double *)malloc (sizeof (double));
+  double q_now;
+  double q_new;
+
+  // fill in maxU, maxA
+  maxQsa (gr, weights, mouse_pos, cats, cheeses, size_X, graph_size, maxU,
+          maxA);
+
+  // fill in features
+  evaluateFeatures (gr, features, mouse_pos, cats, cheeses, size_X,
+                    graph_size);
+  q_now = Qsa (weights, features);
+  q_new = *maxU;
+  for (size_t i = 0; i < numFeatures; i++)
+    {
+      weights[i] += (alpha * (reward + lambda * (q_new)-q_now)) * features[i];
+    }
+  free (maxU);
+  free (maxA);
 }
 
 int
@@ -328,6 +366,42 @@ feat_QLearn_action (double gr[max_graph_size][4], double weights[25],
    * TO DO: Complete this function
    ***********************************************************************************************/
 
+  int mouse_ind = toInd (mouse_pos[0][0], mouse_pos[0][1], size_X);
+  int *available_move = (int *)malloc (4 * sizeof (int));
+
+  int available_count = 0;
+  for (int i = 0; i < 4; i++)
+    {
+      if (gr[mouse_ind][i])
+        {
+          *(available_move + available_count) = i;
+          available_count++;
+        }
+    }
+
+  double c_int = (double)(rand () % 101);
+  double c = c_int / 100;
+  int a;
+  // random, since pct increases, so we do >=, less likely to generate random
+  // as pct gets larger
+  if (c > pct)
+    {
+      int action_index = rand () % available_count;
+      a = *(available_move + action_index);
+    }
+  else
+    {
+      int *maxU = (int *)malloc (sizeof (double));
+      int *maxA = (int *)malloc (sizeof (int));
+      maxQsa (gr, weights, mouse_pos, cats, cheeses, size_X, graph_size, maxU,
+              maxA);
+      a = *maxA;
+      free (maxU);
+      free (maxA);
+    }
+  free (available_move);
+
+  return (a);
   return (0); // <--- replace this while you're at it!
 }
 
@@ -357,6 +431,11 @@ evaluateFeatures (double gr[max_graph_size][4], double features[25],
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
+  for (size_t i = 0; i < numFeatures; i++)
+    {
+      featureFuncHandlar (gr, features, mouse_pos, cats, cheeses, size_X,
+                          graph_size, i);
+    }
 }
 
 double
@@ -370,8 +449,13 @@ Qsa (double weights[25], double features[25])
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
+  double qsa = 0;
+  for (size_t i = 0; i < numFeatures; i++)
+    {
+      qsa += weights[i] * features[i];
+    }
 
-  return (0); // <--- stub! compute and return the Qsa value
+  return (qsa); // <--- stub! compute and return the Qsa value
 }
 
 void
@@ -392,10 +476,32 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
   /***********************************************************************************************
    * TO DO: Complete this function
    ***********************************************************************************************/
-
-  *maxU = 0; // <--- stubs! your code will compute actual values for these two
-             // variables!
+  *maxU = -DBL_MAX; // <--- stubs! your code will compute actual values for
+                    // these two variables!
   *maxA = 0;
+  double *features = (double *)malloc (sizeof (double) * 25);
+  int mouse_ind = toInd (mouse_pos[0][0], mouse_pos[0][1], size_X);
+  int cur_mouse_x = mouse_pos[0][0];
+  int cur_mouse_y = mouse_pos[0][1];
+  double temp = 0;
+  for (int i = 0; i < 4; i++)
+    {
+      if (gr[mouse_ind][i])
+        {
+          get_newloc_on_nei_ind (mouse_pos, i);
+          evaluateFeatures (gr, features, mouse_pos, cats, cheeses, size_X,
+                            graph_size);
+          temp = Qsa (weights, features);
+          if (temp > *maxU)
+            {
+              *maxU = temp;
+              *maxA = i;
+            }
+          mouse_pos[0][0] = cur_mouse_x;
+          mouse_pos[0][1] = cur_mouse_y;
+        }
+    }
+  free (features);
   return;
 }
 
@@ -403,3 +509,27 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
  *  Add any functions needed to compute your features below
  *                 ---->  THIS BOX <-----
  * *************************************************************************************************/
+static double
+relative_mous_cat_to_cheese (double gr[max_graph_size][4], int mouse_pos[1][2],
+                             int cats[5][2], int cheeses[5][2], int size_X,
+                             int graph_size)
+{
+  return 0;
+}
+
+static void
+featureFuncHandlar (double gr[max_graph_size][4], double features[25],
+                    int mouse_pos[1][2], int cats[5][2], int cheeses[5][2],
+                    int size_X, int graph_size, int feat_num)
+{
+  switch (feat_num)
+    {
+    case 0:
+      features[0] = relative_mous_cat_to_cheese (gr, mouse_pos, cats, cheeses,
+                                                 size_X, graph_size);
+      break;
+
+    default:
+      break;
+    }
+}
