@@ -494,10 +494,11 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
           evaluateFeatures (gr, features, mouse_pos, cats, cheeses, size_X,
                             graph_size);
           temp = Qsa (weights, features);
+          printf ("***************temp:%f\n", temp);
           if (temp >= *maxU)
             {
               *maxU = temp;
-              printf ("***************\n");
+
               *maxA = i;
             }
           mouse_pos[0][0] = cur_mouse_x;
