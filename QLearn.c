@@ -481,7 +481,6 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
    ***********************************************************************************************/
   *maxU = -DBL_MAX; // <--- stubs! your code will compute actual values for
                     // these two variables!
-  *maxA = 0;
   double *features = (double *)malloc (sizeof (double) * 25);
   int mouse_ind = toInd (mouse_pos[0][0], mouse_pos[0][1], size_X);
   int cur_mouse_x = mouse_pos[0][0];
@@ -512,7 +511,7 @@ maxQsa (double gr[max_graph_size][4], double weights[25], int mouse_pos[1][2],
  *  Add any functions needed to compute your features below
  *                 ---->  THIS BOX <-----
  * *************************************************************************************************/
-static double
+double
 relative_mous_cat_to_cheese (double gr[max_graph_size][4], int mouse_pos[1][2],
                              int cats[5][2], int cheeses[5][2], int size_X,
                              int graph_size)
