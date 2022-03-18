@@ -30,8 +30,10 @@
 */
 #include "QLearn.h"
 // helper function that convert coordinate to the index for graph array
-static double relative_mous_cat_to_cheese ();
-static void featureFuncHandlar ();
+static void featureFuncHandlar (double gr[max_graph_size][4],
+                                double features[25], int mouse_pos[1][2],
+                                int cats[5][2], int cheeses[5][2], int size_X,
+                                int graph_size, int feat_num);
 toInd (int x, int y, int size_X)
 {
 
