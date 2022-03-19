@@ -4,15 +4,15 @@ Assignment 3 - Reinforcement Learning - Q Learning
 
 ________________________________________________
 
-Student Name 1 (last, first):
+Student Name 1 (last, first): le keping
 
 Student Name 2 (last, first):
 
-Student number 1:
+Student number 1: 1004948890
 
 Student number 2:
 
-UTORid 1:
+UTORid 1: lekeping
 
 UTORid 2:
 
@@ -22,7 +22,7 @@ READ THIS AND SIGN YOUR NAME AT THE END:
 honesty and plaguarism. All work submitted as part
 of this assignment is my own.
 
-	Signed: _(student 1 name here)__	_(student 2 name here)__
+	Signed: le keping	_(student 2 name here)__
 
 
 (-5 marks for failing to provide the identifying
@@ -49,37 +49,28 @@ but explain carefully when needed.
      (1 mark) # Experiment 1, 10000 training trials, 20 rounds, random seed 1522,
      # 8x8 grid, cat-smartness .9
 
-     Initial mouse winning rate (first rate obtained when training starts):
+     Initial mouse winning rate (first rate obtained when training starts): 0.069
      
-     ~~~~~ 
-     Initial win rate is 0.069
 
      Train your mouse, and once trained, run the evaluation and  
-     record the mouse winning rate:
-
-     ~~~~~
-     Trained win rate is 0.86
+     record the mouse winning rate: 0.86
 
      (1 mark) # Experiment 2, 1000000 training trials, 50 rounds, random seed 1522,
      # 8x8 grid, cat-smartness .9
 
-     Initial mouse winning rate (first rate obtained when training starts):
+     Initial mouse winning rate (first rate obtained when training starts): 0.066
      
-     ~~~~~
-     Initial winning rate is 0.066
      
      Train your mouse, and once trained, run the evaluation and  
-     record the mouse winning rate:
+     record the mouse winning rate:  0.93
 
-     ~~~~~
-     Trained win rate is 0.93
 
      (1 mark) Would the mouse keep improving and become invincible if
      you ran, say, 100,000,000 training rounds per batch?     
 
-     ~~~~~
-     if we are running the same seed, I would say yes because the mouse might
-     have experienced every experience tuple possible
+     if we are running the same seed same num cats, and same num cheese, 
+     I would say yes because the mouse might have experienced every experience 
+     tuple possible then we would know what to do exactly in every situation
 
 4 .- Using the QTable saved from Experiment 2 (NO re-training!)
 
@@ -92,7 +83,7 @@ but explain carefully when needed.
      # but using the random seed 31415 for the game.
 	
      Mouse Winning Rate: 0.49
-     Average rate for Experiement 3 and Experiment 4:
+     Average rate for Experiement 3 and Experiment 4: 0.42
 
      (1 mark) Compare with the rate obtained in experiment 2. What is happening here?
      
@@ -124,6 +115,29 @@ but explain carefully when needed.
 7 .- (3 marks) Explain your feature set for feature-based Q Learning, and
                explain why and how each feature is expected to contribute
 	       to helping your mouse win
+     
+     - feature 1: a simple measure that gives the manhattan from mouse to a
+     closest cat
+
+     - feature 2: using a modified version of heuristic search function from A1 to give the path
+     len from mouse to closest cheese
+
+     - feature 3: it is called cats_in_between, in a nutshell, it makes an attemp to 
+     measure how many cats are in the way of mouse and a cheese, in detail, it measures
+     the cats' disatnce to a line connecting a mouse and a cheese, if the distance is too 
+     close (i.e. the cat would catch mouse just by going perpendicular with respect to the line)
+     measure if cat is in between of mouse and cheese, if it is, then it is worse
+     
+     - aborted feature: I tried a function called bunched_up_cat, measuring the averge distance
+     of the cats from the averaged center, but every time it seems to got close to zero weight, 
+     I think this could be a good idea, since the more bunched up the cats are, the less power they have 
+     to catch the mouse, if i have more time i would refine this on and also feature 3 
+     (it is not working very well currently)
+     
+     *note:
+     all features are mapped to an output range [0,1] using a mapping function given by the 
+     equation copied from
+     https://stackoverflow.com/questions/5731863/mapping-a-numeric-range-onto-another
 
 8 .- Carry out the following experiments:
 
@@ -131,30 +145,36 @@ but explain carefully when needed.
      # the 16x16 grid, one cat, and one cheese, cat-smartness=.9,  
      # random seed = 1522, and use 1000000 trials and 50 rounds. 
 
-     Initial mouse winning rate (first rate obtained when training starts):
+     Initial mouse winning rate (first rate obtained when training starts): 0.034
      
-     Mouse Winning Rate (from evaluation after training):
+     Mouse Winning Rate (from evaluation after training):0.74
 
      Compare this rate against the rate obtained in Experiment #5, what
      are your conclusions regarding the utility of feature-based
      Q-Learning?
 
+     it works better compare to a insufficiently trained standard Q-leanr algorithm
+
      (1 mark) # Experiment 7, using the saved weights from Experiment 6 (no
      # re-training) run the evaluation using random seed 4289, same
      # 1 cheese, 1 cat, and cat-smartness=.9, 16x16 grid
 
-     Mouse Winning Rate (from evaluation after training):
+     Mouse Winning Rate (from evaluation after training):0.8
 
      (1 mark) # Experiment 8, using the saved weights from Experiment 6 (no
      # re-training) run the evaluation using random seed 31415, same
      # 1 cheese, 1 cat, and cat-smartness=.9, 16x16 grid
 
-     Mouse Winning Rate (from evaluation after training):
+     Mouse Winning Rate (from evaluation after training):0.81
 
      (1 mark) Comparing the winning rates from Experiments #7 and #8 against
      those from Experiment #6, what can you conclude about feature-
      based Q-Learning in terms of its ability to deal with changes 
      to the environment?
+     
+     feature based q learning have a much better chances to generalize well 
+     if features are well-designed, because unlike standard q-learn, feature q-learn's
+     utility is based on feature calculation based on current enviroment
      
 9 .- Carry out the following experiments:
 
@@ -162,15 +182,15 @@ but explain carefully when needed.
      # the 16x16 grid, 2 cats, and 3 cheeses, cat-smartness=.9,  
      # random seed = 1522, and use 1000000 trials and 50 rounds. 
 
-     Initial mouse winning rate (first rate obtained when training starts):
+     Initial mouse winning rate (first rate obtained when training starts):0.079
      
-     Mouse Winning Rate (from evaluation after training):
+     Mouse Winning Rate (from evaluation after training):0.78
   
      (1 mark) # Experiment 9: Using the trained weights from Experiment 9, (no
      # re-training), run the evaluation on the 16x16 grid, 2 cats, 
      # 3 cheeses, cat-smartness=.9, and random seed 4289
      
-     Mouse Winning Rate (from evaluation after training):
+     Mouse Winning Rate (from evaluation after training):0.66
 
      (1 mark) # Experiment 9: Using the trained weights from Experiment 9, (no
      # re-training), run the evaluation on the 32x32 grid, 2 cats, 
@@ -182,12 +202,31 @@ but explain carefully when needed.
      the usefulness and applicability of standard Q-Learning vs. 
      feature-based Q-learning?
 
+     It has a much wider use case, for example in #experiement 9, we use a 
+     model that has been trained on a smaller dataset, and used on a much larger
+     one achieving a desirable result, which is just not applicable for standard 
+     q-learning, also it can be trained in much larger dataset, with a good set of
+     features, it can compete or even win over standard q-learning given the same 
+     amount of training time. So, it is fair to say feature based Q-learning is 
+     more useful in most cases compare to standard Q-learning
+
 10 . - (2 marks) We obviously can not train an expensive robot by trial and error,
       How would you implement feature-based Q-learning for a mobile bot so you
       can take advantage of reinforcement learning but not spend millions on
       broken robots that keep falling down the stairs?
       
-      
+      features might include the state of robots' balance (i.e. how much force 
+      is required to not fall)? to indicate the desireness of 
+      that situation
+
+      also might include the distance to the next stairs
+
+      distance of obsticles
+
+      basically, a bunch of features that helps the robot learn what kind of situation
+      is beneficial, what kind of situation is not ok to get into
+
+
 _____________________________________________________
 
 Mark with an 'x' where appropriate. If something is only
@@ -197,23 +236,23 @@ doesn't work, or what problems exist.
 			Complete/Working	Partial		Not done
 
 QLearn 
- update
-
-Reward
- function
-
-Decide
- action
-
-featureEval
-
-evaluateQsa
-
-maxQsa_prime
-
-Qlearn_features
-
-decideAction_features
+ update                x
+ 
+Reward 
+ function              x
+ 
+Decide 
+ action                x
+ 
+featureEval            x
+ 
+evaluateQsa            x
+ 
+maxQsa_prime           x
+ 
+Qlearn_features        x
+ 
+decideAction_features  x
 
 _____________________________________________________
 
