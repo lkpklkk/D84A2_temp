@@ -35,6 +35,15 @@ static void featureFuncHandlar(double gr[max_graph_size][4],
                                int cats[5][2], int cheeses[5][2], int size_X,
                                int graph_size, int feat_num);
 
+/*
+
+██╗░█████╗░░█████╗░░█████╗░
+╚═╝██╔══██╗██╔══██╗██╔══██╗
+░░░██║░░██║██║░░██║██║░░██║
+░░░██║░░██║██║░░██║██║░░██║
+██╗╚█████╔╝╚█████╔╝╚█████╔╝
+╚═╝░╚════╝░░╚════╝░░╚════╝░*/
+
 typedef struct cor
 {
   int x;
@@ -446,6 +455,17 @@ int search_path_len(int size_X, int graph_size, double gr[max_graph_size][4],
   free(pred);
   return bla;
 }
+
+/*
+██╗░░░██╗░█████╗░██╗░░░██╗
+╚██╗░██╔╝██╔══██╗╚██╗░██╔╝
+░╚████╔╝░███████║░╚████╔╝░
+░░╚██╔╝░░██╔══██║░░╚██╔╝░░
+░░░██║░░░██║░░██║░░░██║░░░
+░░░╚═╝░░░╚═╝░░╚═╝░░░╚═╝░░░
+
+█░█ █▀▀ █░░ █▀█ █▀▀ █▀█   █▀▀ █▄░█ █▀▄
+█▀█ ██▄ █▄▄ █▀▀ ██▄ █▀▄   ██▄ █░▀█ █▄▀*/
 
 int get_best_move(double *QTable, int s, int *available_move, int available_count)
 {
